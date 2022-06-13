@@ -1,0 +1,48 @@
+formatVersion: 1
+inputs:
+  name:
+    type: string
+    title: name
+    description: name the thing
+  network:
+    type:  string
+    title: network
+    description: name the network
+  size:
+    type: integer
+    title: network
+    description: enter the number of IP addresses you need
+resources:
+  network:
+    type: cloud.nsx.network
+    properties:
+      name: ${input.name}-network
+      networktype:  '${input.network == "internal" ? "private" : "routed"}'
+      constraints:
+        - tag: ${"net:" + input.network + "-" + input.size}
+      tags:
+        - key: net
+          value: ${input.name}
+  securitygroup:
+    type: cloud.securitygroup
+    properties:
+      securitygrouptype:  new
+      name: ${input.name}-SG
+      description: Security Group for ${input.name} environment
+      tags:
+        - key: securityGroup
+          value: ${input.name}-SG
+        - key: lab
+          value: ${input.name}
+  securitygroup:
+    type: cloud.securitygroup
+    properties:
+      securitygrouptype:  new
+      name: ${input.name}-user-SG
+      description: Security Group for ${input.name} environment
+      tags:
+        - key: securityGroup-user-SG
+          value: ${input.name}
+        - key: lab
+          value: ${input.name}
+    
