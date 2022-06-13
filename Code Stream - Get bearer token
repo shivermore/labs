@@ -1,0 +1,28 @@
+Task 1: get refresh token
+type: REST
+action: Post
+url: https://vra.home.lab/csp/gateway/am/api/login?access_token
+payload:
+{
+    "username":"${var.apiusername}",
+    "password":"${var.apipassword}"
+}
+Headers:
+Accept
+application/json
+Content-Type
+application/json
+
+Task 2: get bearer token
+type: REST
+action: Post
+url:  https://vra.home.lab/iaas/cpi/login
+payload:
+{
+    "refreshToken":"${Access API.Get Refresh Token.output.responseJson.refresh_token}"
+}
+Headers:
+Accept
+application/json
+Content-Type
+application/json
