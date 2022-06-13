@@ -1,0 +1,67 @@
+task 1 - get fabric network node
+type: REST
+action: get
+url: ${var.RestFabricUrl}tags.item.key eq 'net' and tags.item.value eq '${input.name}'
+headers:
+accept
+application/json
+content-type
+application/json
+authorization
+Bearer ${input.bearerToken}
+
+Task 2 (1) - create network profile
+type: REST
+action: POST
+url: https://vra.home.lab/iaas/api/network-profiles
+payload:
+{
+    "name":"Lab-${input.name}",
+    "description":"bla bla ${input.name} bla",
+    "regionId":"${var.VCF Workload Cloud Zone ID}",
+    "fabricNetworkIds:["${Add Network Profile.Get Fabric Network Node.output.responseJson.content[0].id}"],
+    "tags":[{
+           "key":"net"
+           "value":"${input.name}"
+           }]
+}
+Headers:
+content-type
+application/json
+authorization
+Bearer ${input.bearerToken}
+
+Task 2 (2) - calculate DNS server
+type: vro
+endpoint: vrealize orchestrator
+workflow: Calculate DNS from CIDR
+cidr$: ${Add Network Profile.Get Fabric Network Node.output.responseJson.content[0].cidr}
+
+vRO: calculate DNS from CIDR
+inputs:
+cidr  string  cidr
+outputs:
+dnsaddress  string  dnsaddress
+
+scripting:
+var networkaddress = cidr.split('/');
+var octets = networkaddress[0].split('.');
+var lastoctets = parseInt(octets[3]);
+dnsaddress = octets[0] + '.' + octets[1] + '.' + octets[2] + '.' + (lastoctets + 2).tostring();
+
+Task 2 (3) config fabric network dns server 
+type: REST
+action: patch
+url: https://vra.home.lab/iaas/api/fabric-networks-vsphere/${Add Network Profile.Get Fabric Network Node.output.responseJson.content[0].id}?apiVersion=2021-07-15
+payload:
+{
+    "dnsServerAddresses":["${Add Network Profile.Calculate DNS Server Address.output.properties['dnsAddress']}"]
+}
+Headers:
+accept
+application/json
+content-type
+application/json
+authorization
+Bearer ${input.bearerToken}
+
