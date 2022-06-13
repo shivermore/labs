@@ -1,0 +1,5 @@
+type: pipeline
+pipeline details:
+pipeline: create Cloud Assembly Network Profile
+bearer tokens: ${Deploy Lab Components.Get vRA API Bearer Token.output.outputProperties.bearerToken}
+name: ${input.lab}
