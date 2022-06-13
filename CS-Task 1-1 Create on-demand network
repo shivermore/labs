@@ -1,0 +1,9 @@
+type: vmware cloud template
+action: create deployment
+deployment name: ${input.name}-network
+cloud template source: cloud assembly
+cloud template name: On-Demand Network
+cloud template inputs:
+  name: ${input.name}
+  size: ${input.size}
+  network: ${input.network}
