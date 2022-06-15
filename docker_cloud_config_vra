@@ -28,4 +28,6 @@ cloudConfig: |
     - docker load -i $path/oc_redis.tar.gz
     - mkdir $path/cert
     - openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout $path/cert/cert.key -out $path/cert/cert.crt -subj "/c=us/st=ne/l=omaha/o=home/ou=lab/cn=server"
-    
+    - docker-compose -f $path/docker-compose.yml up -d
+    - sed -i.pak -e 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+    - systemctl restart sshd
