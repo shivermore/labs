@@ -1,0 +1,5 @@
+When using saltstack config w/ vRA in an isolated environment you must have a local yum repository if you want to deploy the salt minion via cloud template.
+Saltstack config w/ vRA requires some dependencies for RHEL machines and runs cloudInit commands to download them from yum
+
+For windows boxes to get their minion via a cloud template, you need to be on vRA 8.6.2 or later with a salt master on version 3004.1 or later.
+Otherwise you must use cloudBase-Init commands to get and install the minion.
