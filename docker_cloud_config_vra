@@ -1,0 +1,31 @@
+cloudConfig: |
+  #cloud-config
+  preserve_hostname: false
+  hostname: ${input.name}-01
+  fqdn: ${input.name}-01.${input.labname}.home.lab
+  runcmd:
+    - path="/opt/app"
+    - mount -t nfs x.x.x.x:/share /mnt/netshare
+    - mkdir $path
+    - cp /mnt/share/* $path/
+    - yum -y install docker-ce
+    - cp /mnt/netshare/yum.repo/docker-compose /usr/local/bin
+    - chmod -x /usr/local/bin/docker-compose
+    - ln -s /usr/local/bin/docker-compose /user/bin/docker-compose
+    - export address="${resource.srv.networks[0].address}"
+    - export dns="${resource.srv.networks[0].dns[0]}"
+    - files=$path/*.template
+    - for file in ${FILES[@]}; do name=$(echo $file | cut -f 1 -d '.'); ( echo "cat <<EOF >$name.yml"; cat $file; echo "EOF";) > $path/tmp.yml; . $path/tmp.yml; done;
+    - mv $path/auth.yml $$path/authcfg.yml
+    - rm -r -f $path/*.template $path/temp.yml
+    - systemctl start docker
+    - systemctl enable /user/lib/systemd/system/docker.service
+    - docker load -i $path/oc_auth.tar.gz
+    - docker load -i $path/oc_be.tar.gz
+    - docker load -i $path/oc_elasticsearch.tar.gz
+    - docker load -i $path/oc_fe_2.1.3.tar.gz
+    - docker load -i $path/oc_postgres.tar.gz
+    - docker load -i $path/oc_redis.tar.gz
+    - mkdir $path/cert
+    - openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout $path/cert/cert.key -out $path/cert/cert.crt -subj "/c=us/st=ne/l=omaha/o=home/ou=lab/cn=server"
+    
