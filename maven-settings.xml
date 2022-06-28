@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" 
+  xmlns="http://maven.apache.org/SETTINGS/1.1.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <profiles>
+    <profile>
+      <id>packaging</id>
+      <activation>
+        <property>
+          <name>!legacy</name>
+        </property>
+      </activation>
+      <properties>
+        <keystoreGroupId>com.vmware.pscoe.build</keystoreGroupId>
+        <keystoreArtifactId>archetype.keystore</keystoreArtifactId>
+        <keystoreLocation>target/${keystoreArtifactId}-${keystoreVersion}/archetype.keystore</keystoreLocation>
+        <keystoreVersion>2.0.1</keystoreVersion>
+        <keystorePassword>password123</keystorePassword>
+        <vroPrivateKeyPem>target/${keystoreArtifactId}-${keystoreVersion}/private_key.pem</vroPrivateKeyPem>
+        <vroCertificatePem>target/${keystoreArtifactId}-${keystoreVersion}/cert.pem</vroCertificatePem>
+        <vroKeyPass>VMware1!</vroKeyPass>
+      </properties>
+    </profile>
+
+    <profile>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <name>pscoe</name>
+          <url>http://artifactory.pscoe.vmware.com/artifactory/pscoe</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <name>pscoe</name>
+          <url>http://artifactory.pscoe.vmware.com/artifactory/pscoe</url>
+        </pluginRepository>
+      </pluginRepositories>
+      <properties>
+        <snapshotRepositoryUrl>http://artifactory.pscoe.vmware.com/artifactory/pscoe</snapshotRepositoryUrl>
+        <releaseRepositoryUrl>http://artifactory.pscoe.vmware.com/artifactory/pscoe</releaseRepositoryUrl>
+      </properties>
+      <id>artifactory</id>
+    </profile>
+
+    <profile>
+      <id>ara-bootcamp</id>
+      <!-- IP: 10.27.112.32 -->
+      <properties>
+        <!--vRO Connection-->
+        <vro.host>vra-l-01a.corp.local</vro.host>
+        <vro.port>443</vro.port>
+        <vro.username>configurationadmin</vro.username>
+        <vro.password>VMware1!</vro.password>
+        <vro.authHost>vra-l-01a.corp.local</vro.authHost>
+        <vro.auth>basic</vro.auth>
+
+        <!-- Default Tenant -->
+        <vrang.host>vra-l-01a.corp.local</vrang.host>
+        <vrang.port>443</vrang.port>
+        <vrang.username>configurationadmin</vrang.username>
+        <vrang.password>VMware1!</vrang.password>
+        <vrang.org.id>12c2d97b-d627-4a12-9fa2-4e8efb56bd57</vrang.org.id>
+        <vrang.project.id>39924cc1-ff08-4831-af85-d8274bf56331</vrang.project.id>
+
+        <!-- Common -->
+        <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
+        <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>
+      </properties>
+    </profile>
+
+  </profiles>
+  <activeProfiles>
+    <activeProfile>artifactory</activeProfile>
+  </activeProfiles>
+</settings>
